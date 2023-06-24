@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Crash</title>
+  <style>
+    body {
+      text-align: center;
+      margin: auto;
+      font-family: Arial, sans-serif;
+      background-color: #F0F0F0;
+      margin: 0;
+      padding: 0;
+    }
+    h1{
+      padding-top: 10px;
+    }
+
+     h2, h3 {
+      margin-top: 0;
+      color: #333333;
+    }
+
+    #game-container {
+      margin-top: 50px;
+    }
+
+    #current-value {
+      font-size: 24px;
+    }
+
+    #bet-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    #bet-amount {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+      border: 1px solid #CCCCCC;
+      border-radius: 5px;
+      width: 150px;
+    }
+
+    #withdraw-button, #start-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #FF0000;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #start-button {
+      margin-left: 10px;
+    }
+
+    #wallet-container {
+      margin-top: 50px;
+    }
+
+    #wallet-value {
+      font-size: 18px;
+    }
+    
+    @media (max-width: 480px) {
+      #bet-container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      #bet-amount {
+        width: 100%;
+      }
+      
+      #withdraw-button, #start-button {
+        margin-top: 10px;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Crash</h1>
+  <div id="game-container">
+    <h2 id="current-value">$1.0</h2>
+    <div id="bet-container">
+      <input type="number" id="bet-amount" placeholder="Enter bet amount" min="0">
+      <button id="withdraw-button">Retirar</button>
+      <button id="start-button">Iniciar</button>
+    </div>
+  </div>
+  <div id="wallet-container">
+    <h3>Wallet</h3>
+    <p id="wallet-value">$100</p>
+  </div>
+  <script>
+    window.onload = function() {
+      var currentValue = 1.0;
+      var intervalId;
+      var walletValue = 100;
+      var betAmount = 0;
+
+      var button = document.getElementById("start-button");
+      button.addEventListener("click", function() {
+        betAmount = parseFloat(document.getElementById("bet-amount").value);
+        if (isNaN(betAmount) || betAmount <= 0 || betAmount > walletValue) {
+          alert("Please enter a valid bet amount.");
+          return;
+        }
+
+        walletValue -= betAmount;
+        updateWalletValue();
+
+        intervalId = setInterval(increaseValue, 100);
+        button.disabled = true;
+      });
+
+      var withdrawButton = document.getElementById("withdraw-button");
+      withdrawButton.addEventListener("click", function() {
+        var profit = (betAmount * currentValue) - betAmount;
+        walletValue += betAmount + profit;
+        updateWalletValue();
+        alert("You withdrew $" + (betAmount + profit).toFixed(2) + " from your bet.");
+        betAmount = 0;
+        document.getElementById("bet-amount").value = "";
+      });
+
+      function increaseValue() {
+        var randomNumber = Math.random();
+        if (randomNumber < 0.1) { // 10% chance of crashing
+          clearInterval(intervalId);
+          button.disabled = false;
+          alert("Crashed! You lost your bet of $" + betAmount.toFixed(2));
+          currentValue = 1.0;
+          document.getElementById("current-value").textContent = "$" + currentValue.toFixed(1);
+          betAmount = 0;
+          document.getElementById("bet-amount").value = "";
+        } else {
+          currentValue += 0.1;
+          document.getElementById("current-value").textContent = "$" + currentValue.toFixed(1);
+        }
+      }
+
+      function updateWalletValue() {
+        document.getElementById("wallet-value").textContent = "$" + walletValue.toFixed(2);
+      }
+    };
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
